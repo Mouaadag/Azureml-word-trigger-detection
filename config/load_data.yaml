@@ -1,0 +1,32 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+name: load_data
+display_name: Load Data
+version: 1
+type: command
+is_deterministic: True
+
+inputs:
+  positive_dir:
+    type: uri_folder
+    description: Directory containing positive audio samples
+  negative_dir:
+    type: uri_folder
+    description: Directory containing negative audio samples
+  storage_key:
+    type: string
+    description: Azure Storage account key
+
+outputs:
+  output_file:
+    type: uri_file
+    description: Output JSON file containing file paths
+
+code: ../src/load_data
+environment: azureml:trigger-word-detection-environment:14
+
+command: >-
+  python load_data.py 
+  --positive_dir ${{inputs.positive_dir}} 
+  --negative_dir ${{inputs.negative_dir}} 
+  --storage_key ${{inputs.storage_key}}
+  --output_file ${{outputs.output_file}}

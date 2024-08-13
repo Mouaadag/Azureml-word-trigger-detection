@@ -1,0 +1,36 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+name: split_dataset
+display_name: Split Dataset
+description: Splits the input dataset into train, validation, and test sets
+version: 1.0.0
+type: command
+is_deterministic: True
+
+inputs:
+  input_dir:
+    type: uri_folder
+    description: Input directory containing the prepared data (X.npy and y.npy)
+  test_size:
+    type: number
+    default: 0.01
+    description: Proportion of the dataset to include in the test split
+  val_size:
+    type: number
+    default: 0.01
+    description: Proportion of the dataset to include in the validation split
+
+outputs:
+  output_dir:
+    type: uri_folder
+    description: Output directory for the split datasets
+
+code: ../src/split_data
+
+environment: azureml:trigger-word-detection-environment:14
+
+command: >-
+  python split_data.py 
+  --input_dir ${{inputs.input_dir}} 
+  --output_dir ${{outputs.output_dir}} 
+  --test_size ${{inputs.test_size}}
+  --val_size ${{inputs.val_size}}

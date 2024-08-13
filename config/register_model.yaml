@@ -1,0 +1,31 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+name: register_trigger_word_detection_model
+display_name: Register Trigger Word Detection Model
+description: Registers the trained model in Azure ML Model Registry
+version: 1.0.0
+
+inputs:
+  model_path:
+    type: uri_folder
+  evaluation_results:
+    type: uri_file
+  model_name:
+    type: string
+    default: "trigger_word_detection_model"
+  experiment_name:
+    type: string
+    default: "trigger-word-detection"
+
+outputs:
+  registered_model:
+    type: uri_folder
+code: ../src/register_model
+environment: azureml:trigger-word-detection-environment:14
+
+command: >-
+  python register_model.py 
+  --model_path ${{inputs.model_path}} 
+  --evaluation_results ${{inputs.evaluation_results}} 
+  --registered_model ${{outputs.registered_model}}
+  --model_name ${{inputs.model_name}}
+  --experiment_name ${{inputs.experiment_name}}

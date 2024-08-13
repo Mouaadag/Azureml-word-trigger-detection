@@ -1,0 +1,24 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+name: prepare_dataset
+display_name: Prepare Dataset
+version: 1
+type: command
+is_deterministic: True
+
+inputs:
+  input_file:
+    type: uri_file
+    description: Path to the input JSON file containing features
+
+outputs:
+  output_dir:
+    type: uri_folder
+    description: Output directory for prepared dataset
+
+code: ../src/prepare_dataset
+
+environment: azureml:trigger-word-detection-environment:14
+command: >-
+  python prepare_dataset.py 
+  --input_file ${{inputs.input_file}} 
+  --output_dir ${{outputs.output_dir}}

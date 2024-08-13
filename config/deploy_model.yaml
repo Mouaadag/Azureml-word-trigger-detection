@@ -1,0 +1,34 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+name: deploy_trigger_word_model
+display_name: Deploy Trigger Word Detection Model
+version: 1
+type: command
+
+inputs:
+  model:
+    type: string
+  endpoint_name:
+    type: string
+  deployment_name:
+    type: string
+  instance_type:
+    type: string
+  instance_count:
+    type: integer
+
+outputs:
+  deployment_details:
+    type: uri_folder
+
+code: ../src/deploy_model
+
+command: >-
+  python deploy_model.py 
+  --model ${{inputs.model}}
+  --endpoint_name ${{inputs.endpoint_name}}
+  --deployment_name ${{inputs.deployment_name}}
+  --instance_type ${{inputs.instance_type}}
+  --instance_count ${{inputs.instance_count}}
+  --deployment_details ${{outputs.deployment_details}}
+
+environment: azureml:trigger-word-detection-environment:14

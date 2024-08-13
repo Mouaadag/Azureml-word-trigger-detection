@@ -1,0 +1,38 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+name: train_trigger_word_model
+display_name: Train Trigger Word Detection Model
+version: 1
+type: command
+
+inputs:
+  input_dir:
+    type: uri_folder
+    description: Input directory containing split data (X_train.npy, y_train.npy, X_val.npy, y_val.npy)
+  epochs:
+    type: integer
+    default: 50
+    description: Number of epochs to train
+  batch_size:
+    type: integer
+    default: 32
+    description: Batch size for training
+  experiment_name:
+    type: string
+    default: "trigger-word-detection"
+    description: Name of the experiment
+
+outputs:
+  output_model:
+    type: mlflow_model
+
+code: ../src/training/
+
+environment: azureml:trigger-word-detection-environment:14
+
+command: >-
+  python training.py 
+  --input_dir ${{inputs.input_dir}}
+  --output_model ${{outputs.output_model}}  
+  --epochs ${{inputs.epochs}} 
+  --batch_size ${{inputs.batch_size}}
+  --experiment_name ${{inputs.experiment_name}}

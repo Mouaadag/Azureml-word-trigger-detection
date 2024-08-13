@@ -1,0 +1,42 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+name: extract_features
+display_name: Extract Features
+version: 1
+type: command
+is_deterministic: True
+
+inputs:
+  input_file:
+    type: uri_file
+    description: Input JSON file containing audio file paths
+  sample_rate:
+    type: integer
+    default: 16000
+    description: Sample rate for audio processing
+  n_mfcc:
+    type: integer
+    default: 13
+    description: Number of MFCCs to extract
+  max_pad_len:
+    type: integer
+    default: 215
+    description: Maximum padding length for feature matrices
+  storage_key:
+    type: string
+    description: Azure Storage account key
+outputs:
+  output_file:
+    type: uri_file
+    description: Output file containing extracted features
+
+code: ../src/extract_features
+
+environment: azureml:trigger-word-detection-environment:14
+command: >-
+  python extract_features.py 
+  --input_file ${{inputs.input_file}} 
+  --output_file ${{outputs.output_file}}
+  --storage_key ${{inputs.storage_key}}
+  --sample_rate ${{inputs.sample_rate}}
+  --n_mfcc ${{inputs.n_mfcc}}
+  --max_pad_len ${{inputs.max_pad_len}}
